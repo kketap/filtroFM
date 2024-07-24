@@ -1,0 +1,41 @@
+#carga del csv
+import pandas as pd
+from google.colab import files
+
+uploaded = files.upload()
+
+for fn in uploaded.keys():
+  archivo = fn
+  df = pd.read_csv(archivo,sep=';',encoding='latin1')
+
+print(df.head(25))
+
+print(df.columns)
+
+#filtrado basico
+#PA desc
+criteria = {
+    'Position':'ST',
+    'Nation':'Chile',
+    'Age': (18, 21)
+}
+
+def find_players(df,criteria):
+  for key, value in criteria.items():
+    if key in df.columns:
+      if isinstance(value, tuple): #definir rango de la edad en formato de tupla
+        min_value, max_value = value
+        df = df[(df[key] >= min_value) & (df[key]<= max_value)]
+      else:
+        df = df[df[key] == value]
+    else:
+      print(f"columna '{key}' no encontrada") 
+  return df
+
+filtered_players = find_players(df,criteria)
+
+#sorted_players = filtered_players.sort_values(by = ['Best Pot Rating','Age',],ascending = [False, False])
+
+print(filtered_players.head(25))
+
+#print(filtered_players)
